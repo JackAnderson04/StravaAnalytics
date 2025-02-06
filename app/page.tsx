@@ -3,7 +3,7 @@ import ConnectButton from "./ConnectButton";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-orange-100 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-indigo-100 to-white">
       {/* Simple Header */}
       <header className="bg-white/80 backdrop-blur-sm shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -25,7 +25,7 @@ export default function Home() {
           </h1>
           <p className="mt-6 text-lg leading-8 text-gray-600 max-w-2xl mx-auto">
             Get deeper insights into your training data with advanced analytics, 
-            gear maintenance predictions, and activity analysis.
+            personalized trends, and performance metrics tailored just for you.
           </p>
           <div className="mt-10">
             <ConnectButton />
@@ -37,26 +37,26 @@ export default function Home() {
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
             <div className="bg-white/60 backdrop-blur-sm p-6 rounded-lg shadow-sm">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Performance Analytics
+                Training Load Analysis
               </h3>
               <p className="text-gray-600">
-                Deep dive into your training data with advanced metrics and visualizations.
+                Track your fitness and fatigue levels with advanced training load metrics and recovery recommendations.
               </p>
             </div>
             <div className="bg-white/60 backdrop-blur-sm p-6 rounded-lg shadow-sm">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Gear Maintenance Tracking
+                Activity Patterns
               </h3>
               <p className="text-gray-600">
-                Monitor your gear's lifetime with maintenance tracking.
+                Discover your optimal performance times and conditions with detailed pattern analysis of your activities.
               </p>
             </div>
             <div className="bg-white/60 backdrop-blur-sm p-6 rounded-lg shadow-sm">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Activity Breakdown
+                Goal Tracking
               </h3>
               <p className="text-gray-600">
-                View multiple activities at a time to compare.
+                Set and monitor custom goals with real-time progress tracking and achievement milestones.
               </p>
             </div>
           </div>
