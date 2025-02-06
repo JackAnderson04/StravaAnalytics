@@ -3,7 +3,7 @@ import ConnectButton from "./ConnectButton";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-indigo-100 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-orange-100 to-white">
       {/* Simple Header */}
       <header className="bg-white/80 backdrop-blur-sm shadow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -37,26 +37,26 @@ export default function Home() {
           <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
             <div className="bg-white/60 backdrop-blur-sm p-6 rounded-lg shadow-sm">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Training Load Analysis
+                Performance Analytics
               </h3>
               <p className="text-gray-600">
-                Track your fitness and fatigue levels with advanced training load metrics and recovery recommendations.
+                Deep dive into your training data with advanced metrics and analytics.
               </p>
             </div>
             <div className="bg-white/60 backdrop-blur-sm p-6 rounded-lg shadow-sm">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Activity Patterns
+                Gear Maintenance Tracking
               </h3>
               <p className="text-gray-600">
-                Discover your optimal performance times and conditions with detailed pattern analysis of your activities.
+                Monitor your gears lifetime with maintenance tracking.
               </p>
             </div>
             <div className="bg-white/60 backdrop-blur-sm p-6 rounded-lg shadow-sm">
               <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                Goal Tracking
+                Activity Breakdown
               </h3>
               <p className="text-gray-600">
-                Set and monitor custom goals with real-time progress tracking and achievement milestones.
+                View multiple activities at a time to compare.
               </p>
             </div>
           </div>
