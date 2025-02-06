@@ -1,61 +1,76 @@
-import Link from "next/link";
-import ConnectButton from "./ConnectButton"; // Adjust path as needed
+// app/page.tsx
+import ConnectButton from "./ConnectButton";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow">
-        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-b from-orange-100 to-white">
+      {/* Simple Header */}
+      <header className="bg-white/80 backdrop-blur-sm shadow">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
-            <div className="flex">
-              <div className="flex-shrink-0 flex items-center">
-                <h1 className="text-xl font-bold text-indigo-600">
-                  Strava Analytics
-                </h1>
-              </div>
-              <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-                <Link
-                  href="/"
-                  className="border-indigo-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
-                >
-                  Dashboard
-                </Link>
-                <Link
-                  href="/activities"
-                  className="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
-                >
-                  Activities
-                </Link>
-                <Link
-                  href="/profile"
-                  className="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
-                >
-                  Profile
-                </Link>
-              </div>
+            <div className="flex-shrink-0 flex items-center">
+              <h1 className="text-xl font-bold text-[#FC4C02]">
+                Strava Analytics
+              </h1>
             </div>
           </div>
-        </nav>
+        </div>
       </header>
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
-          <div className="border-4 border-dashed border-gray-200 rounded-lg h-96 flex items-center justify-center">
-            <div className="text-center">
-              <h2 className="text-2xl font-semibold text-gray-900">
-                Welcome to Strava Analytics
-              </h2>
-              <p className="mt-2 text-gray-600">
-                Connect your Strava account to get started.
+      {/* Hero Section */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center py-24 sm:py-32">
+          <h1 className="text-4xl font-bold tracking-tight text-gray-900 sm:text-6xl">
+            Elevate Your Training
+          </h1>
+          <p className="mt-6 text-lg leading-8 text-gray-600 max-w-2xl mx-auto">
+            Get deeper insights into your training data with advanced analytics, 
+            gear maintenance predictions, and activity analysis.
+          </p>
+          <div className="mt-10">
+            <ConnectButton />
+          </div>
+        </div>
+
+        {/* Feature Section */}
+        <div className="py-12">
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="bg-white/60 backdrop-blur-sm p-6 rounded-lg shadow-sm">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Performance Analytics
+              </h3>
+              <p className="text-gray-600">
+                Deep dive into your training data with advanced metrics and visualizations.
               </p>
-              {/* Client Component for the interactive button */}
-              <ConnectButton />
+            </div>
+            <div className="bg-white/60 backdrop-blur-sm p-6 rounded-lg shadow-sm">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Gear Maintenance Tracking
+              </h3>
+              <p className="text-gray-600">
+                Monitor your gear's lifetime with maintenance tracking.
+              </p>
+            </div>
+            <div className="bg-white/60 backdrop-blur-sm p-6 rounded-lg shadow-sm">
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                Activity Breakdown
+              </h3>
+              <p className="text-gray-600">
+                View multiple activities at a time to compare.
+              </p>
             </div>
           </div>
         </div>
       </main>
+
+      {/* Footer */}
+      <footer className="bg-white/80 backdrop-blur-sm mt-auto">
+        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-gray-500 text-sm">
+            Not affiliated with Strava. Created for educational purposes.
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }

@@ -1,14 +1,15 @@
+// app/ConnectButton.tsx
 'use client';
 
 import { handleStravaLogin } from '@/utils/oauth';
 
-export default function ConnectStrava() {
-    return (
-        <button
-            onClick={handleStravaLogin}
-            className="mt-4 bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700"
-        >
-            Connect with Strava
-        </button>
-    );
+export default function ConnectButton() {
+  return (
+    <button
+      onClick={handleStravaLogin}
+      className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-[#FC4C02] hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 shadow-sm transition-colors duration-200"
+    >
+      Connect with Strava
+    </button>
+  );
 }

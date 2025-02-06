@@ -2,7 +2,9 @@
 export const config = {
   clientId: process.env.NEXT_PUBLIC_STRAVA_CLIENT_ID,
   clientSecret: process.env.STRAVA_CLIENT_SECRET, // This should never be exposed to the client
-  redirectUri: process.env.NEXT_PUBLIC_REDIRECT_URI || "http://localhost:3000/api/auth/callback",
+  redirectUri: process.env.NEXT_PUBLIC_REDIRECT_URI ||(process.env.NODE_ENV === 'development' 
+    ? 'http://localhost:3000/api/auth/callback'
+    : 'https://your-vercel-domain.vercel.app/api/auth/callback'),
   scope: "activity:read_all,profile:read_all"
 };
 
@@ -33,31 +35,44 @@ export const handleStravaLogin = () => {
 };
 
 // This should be called from the server side only
+// utils/oauth.ts
 export const getToken = async (code: string) => {
-  if (!config.clientSecret) {
-    throw new Error('Strava Client Secret not configured');
+  if (!code) {
+    throw new Error('No authorization code provided');
   }
 
+  const tokenUrl = 'https://www.strava.com/oauth/token';
+  const payload = {
+    client_id: config.clientId,
+    client_secret: config.clientSecret,
+    code: code,
+    grant_type: 'authorization_code'
+  };
+
+  console.log('Attempting token exchange with payload:', {
+    ...payload,
+    client_secret: '[HIDDEN]' // Don't log the actual secret
+  });
+
   try {
-    const response = await fetch("https://www.strava.com/oauth/token", {
-      method: "POST",
+    const response = await fetch(tokenUrl, {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        client_id: config.clientId,
-        client_secret: config.clientSecret,
-        code,
-        grant_type: "authorization_code",
-      }),
+      body: JSON.stringify(payload)
     });
 
+    const data = await response.json();
+
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Failed to exchange code for token');
+      console.error('Token exchange failed with status:', response.status);
+      console.error('Error response:', data);
+      throw new Error(data.message || `HTTP error! status: ${response.status}`);
     }
 
-    return await response.json();
+    console.log('Token exchange successful');
+    return data;
   } catch (error) {
     console.error('Token exchange error:', error);
     throw error;
