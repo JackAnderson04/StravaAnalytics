@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { refreshToken } from '@/utils/oauth';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 interface AthleteData {
   firstname?: string;
@@ -15,7 +14,6 @@ const DISTANCE_TO_MOON = 238900; //miles
 
 const MoonProgressCircle = () => {
   const [totalDistance, setTotalDistance] = useState(0);
-  const [topRides, setTopRides] = useState<{ name: string; distance: number }[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,14 +26,14 @@ const MoonProgressCircle = () => {
           return;
         }
 
-        // Fetch athlete data
+        //store athlete ID/Token
         let athleteResponse = await fetch('https://www.strava.com/api/v3/athlete', {
           headers: {
             'Authorization': `Bearer ${accessToken}`
           }
         });
 
-        if (athleteResponse.status === 401) { // handle error 401: token expired
+        if (athleteResponse.status === 401) { //handle error 401: token expired
           const refreshTokenStr = localStorage.getItem('strava_refresh_token');
           if (!refreshTokenStr) {
             throw new Error('No refresh token available');
@@ -45,8 +43,8 @@ const MoonProgressCircle = () => {
           localStorage.setItem('strava_access_token', newTokenData.access_token);
           localStorage.setItem('strava_refresh_token', newTokenData.refresh_token);
           accessToken = newTokenData.access_token;
-
-          // Retry with new token
+          
+          //retry with new token. Only going to retry once to not overuse API calls
           athleteResponse = await fetch('https://www.strava.com/api/v3/athlete', {
             headers: {
               'Authorization': `Bearer ${accessToken}`
@@ -59,13 +57,11 @@ const MoonProgressCircle = () => {
         }
 
         const athleteData = await athleteResponse.json();
-
-        // Fetch athlete stats
         const statsResponse = await fetch(
           `https://www.strava.com/api/v3/athletes/${athleteData.id}/stats`,
           {
             headers: {
-              'Authorization': `Bearer ${accessToken}`
+              'Authorization': `Bearer ${accessToken}` 
             }
           }
         );
@@ -75,35 +71,11 @@ const MoonProgressCircle = () => {
         }
 
         const stats = await statsResponse.json();
-        const totalMiles = stats.all_ride_totals.distance * 0.000621371; // Convert meters to miles
+        const totalMiles = stats.all_ride_totals.distance * 0.000621371;  
+        /* This converts total distance in meters to miles. 
+        I was seeing about 1% discrepancy between my data on strava and display on the dashboard.
+        Would like to see this be more accurate*/
         setTotalDistance(totalMiles);
-
-        // Fetch recent activities
-        const activitiesResponse = await fetch('https://www.strava.com/api/v3/athlete/activities?per_page=100', {
-          headers: {
-            'Authorization': `Bearer ${accessToken}`
-          }
-        });
-
-        if (!activitiesResponse.ok) {
-          throw new Error('Failed to fetch activities');
-        }
-
-        const activities = await activitiesResponse.json();
-        const sortedRides = activities
-          .filter((activity: any) => activity.type === 'Ride')
-          .sort((a: any, b: any) => b.distance - a.distance)
-          .slice(0, 3)
-          .map((ride: any, index: number) => ({
-            name: `Ride ${index + 1}`,
-            distance: (ride.distance * 0.000621371).toFixed(2) // Convert meters to miles
-          }));
-
-        while (sortedRides.length < 3) {
-          sortedRides.push({ name: `Ride ${sortedRides.length + 1}`, distance: 'N/A' });
-        }
-
-        setTopRides(sortedRides);
       } catch (error) {
         console.error('Error fetching stats:', error);
         setError(error instanceof Error ? error.message : 'Failed to fetch stats');
@@ -114,9 +86,12 @@ const MoonProgressCircle = () => {
     fetchTotalDistance();
   }, []);
 
-  const progress = (totalDistance / DISTANCE_TO_MOON) * 100; // Progress percentage
+  
+  const progress = (totalDistance / DISTANCE_TO_MOON) * 100; //your progress divided by total distance in %
+  
+  
   const radius = 90;
-  const circumference = 2 * Math.PI * radius;
+  const circumference = 2 * Math.PI * radius; //there's gotta be a more concise way to do this lol
   const progressOffset = circumference - (progress / 100) * circumference;
 
   if (loading) {
@@ -132,60 +107,50 @@ const MoonProgressCircle = () => {
   }
 
   return (
-    <div className="flex items-center space-x-8">
-      <div className="relative w-96 h-96 flex items-center justify-center">
-        <svg className="w-full h-full transform -rotate-90">
-          <circle
-            cx="192"
-            cy="192"
-            r={radius}
-            stroke="currentColor"
-            strokeWidth="36"
-            fill="transparent"
-            className="text-orange-100"
-          />
-          <circle
-            cx="192"
-            cy="192"
-            r={radius}
-            stroke="currentColor"
-            strokeWidth="36"
-            fill="transparent"
-            strokeDasharray={circumference}
-            strokeDashoffset={progressOffset}
-            className="text-[#FC4C02]"
-            strokeLinecap="round"
-          />
-        </svg>
-
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-          <span className="text-3xl font-bold text-gray-800 mb-4">
-            {progress.toFixed(2)}%
-          </span>
-        </div>
-        <div className="absolute bottom-4 left-0 right-0 text-center">
-          <div className="text-sm text-gray-600">
-            <div>Ride to the moon progress:</div>
-            <div>{Math.round(totalDistance).toLocaleString()}/{DISTANCE_TO_MOON.toLocaleString()} miles</div>
-          </div>
-        </div>
+    <div className="relative w-96 h-96 flex items-center justify-center">
+      {/* Background circle */}
+      <svg className="w-full h-full transform -rotate-90">
+        <circle
+          cx="192"
+          cy="192"
+          r={radius}
+          stroke="currentColor"
+          strokeWidth="36"
+          fill="transparent"
+          className="text-orange-100"
+        />
+        {/* Progress circle */}
+        <circle
+          cx="192"
+          cy="192"
+          r={radius}
+          stroke="currentColor"
+          strokeWidth="36"
+          fill="transparent"
+          strokeDasharray={circumference}
+          strokeDashoffset={progressOffset}
+          className="text-[#FC4C02]"
+          strokeLinecap="round"
+        />
+      </svg>
+      
+      {/* Center text */}
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+        <span className="text-3xl font-bold text-gray-800 mb-4">
+          {progress.toFixed(2)}%
+        </span>
       </div>
-
-      <div className="w-96 h-96 bg-white rounded-lg shadow-md p-4">
-        <h3 className="text-lg font-bold text-center mb-4">Top 3 Rides</h3>
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={topRides}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" />
-            <YAxis label={{ value: 'Miles', angle: -90, position: 'insideLeft' }} />
-            <Tooltip />
-            <Bar dataKey="distance" fill="#FC4C02" />
-          </BarChart>
-        </ResponsiveContainer>
+      {/* Bottom text */}
+      <div className="absolute bottom-4 left-0 right-0 text-center">
+        <div className="text-sm text-gray-600">
+          <div>Ride to the moon progress:</div>
+          <div>{Math.round(totalDistance).toLocaleString()}/{DISTANCE_TO_MOON.toLocaleString()} miles</div>  {/* show your progress over total distance */}
+        </div>
       </div>
     </div>
   );
 };
+
 
 const MoonProgressDisplay = () => {
   return (
@@ -296,6 +261,9 @@ export default function Dashboard() {
           <h2 className="text-2xl font-semibold text-gray-900 mb-4">Your Dashboard</h2>
           {athlete && (
             <div className="space-y-6">
+              <p className="text-gray-600">
+
+              </p>
               <MoonProgressDisplay />
             </div>
           )}
