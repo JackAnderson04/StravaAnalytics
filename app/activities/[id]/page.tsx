@@ -46,9 +46,14 @@ export default function ActivityDetailsPage() {
         // Parse and store the activity data
         const data = await response.json();
         setActivity(data);
-      } catch (error: any) {
-        console.error('Error fetching activity:', error.message);
-        setError('Failed to load activity details.');
+      } catch (error: unknown) {
+        if (error instanceof Error) {
+          console.error('Error fetching activity:', error.message);
+          setError('Failed to load activity details.');
+        } else {
+          console.error('Unknown error:', error);
+          setError('An unknown error occurred.');
+        }
       } finally {
         setLoading(false); // Mark loading as complete
       }
@@ -79,7 +84,14 @@ export default function ActivityDetailsPage() {
       <p>Average Speed: {activity?.average_speed ? activity.average_speed.toFixed(2) : 'N/A'} m/s</p>
       {photoUrl && (
         <div className="mt-6">
-          <img src={photoUrl} alt={`${activity.name} photo`} className="rounded-lg shadow-lg" />
+          {/* Use a regular <img> tag to bypass image optimization */}
+          <img
+            src={photoUrl}
+            alt={`${activity.name} photo`}
+            className="rounded-lg shadow-lg"
+            width={600}
+            height={400}
+          />
         </div>
       )}
     </div>
