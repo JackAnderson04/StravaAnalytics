@@ -187,34 +187,34 @@ const TopActivities = () => {
           throw new Error('Failed to fetch activities');
         }
 
-        const activities: Activity[] = await activitiesResponse.json(); // Specify type Activity here
+        const activities: Activity[] = await activitiesResponse.json();
 
         const rides = activities
           .filter((activity) => activity.type === 'Ride')
           .map((ride) => ({
             name: ride.name,
-            distance: ride.distance * 0.000621371, // Convert meters to miles
+            distance: ride.distance * 0.000621371,
           }))
-          .sort((a, b) => b.distance - a.distance)
-          .slice(0, 3); // Top 3 rides
+          .sort((a: { distance: number }, b: { distance: number }) => b.distance - a.distance)
+          .slice(0, 3);
 
         const runs = activities
           .filter((activity) => activity.type === 'Run')
           .map((run) => ({
             name: run.name,
-            distance: run.distance * 0.000621371, // Convert meters to miles
+            distance: run.distance * 0.000621371,
           }))
-          .sort((a, b) => b.distance - a.distance)
-          .slice(0, 3); // Top 3 runs
+          .sort((a: { distance: number }, b: { distance: number }) => b.distance - a.distance)
+          .slice(0, 3);
 
         const swims = activities
           .filter((activity) => activity.type === 'Swim')
           .map((swim) => ({
             name: swim.name,
-            distance: swim.distance * 0.000621371, // Convert meters to miles
+            distance: swim.distance * 0.000621371,
           }))
-          .sort((a, b) => b.distance - a.distance)
-          .slice(0, 3); // Top 3 swims
+          .sort((a: { distance: number }, b: { distance: number }) => b.distance - a.distance)
+          .slice(0, 3);
 
         setTopRides(rides);
         setTopRuns(runs);
@@ -273,13 +273,14 @@ const TopActivities = () => {
   );
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
+    <div className="bg-white rounded-lg shadow-md p-6 grid grid-cols-3 gap-6">
       <ActivityList title="Top 3 Rides" activities={topRides} />
       <ActivityList title="Top 3 Runs" activities={topRuns} />
       <ActivityList title="Top 3 Swims" activities={topSwims} />
     </div>
   );
 };
+
 
 
 
