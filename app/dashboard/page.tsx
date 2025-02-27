@@ -1,13 +1,9 @@
-// app/dashboard/page.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-<<<<<<< Updated upstream
-=======
 import { refreshToken } from '@/utils/oauth';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Label } from 'recharts'; 
->>>>>>> Stashed changes
 
 interface AthleteData {
   firstname?: string;
@@ -15,17 +11,14 @@ interface AthleteData {
   profile?: string;
 }
 
-<<<<<<< Updated upstream
-=======
 const DISTANCE_TO_MOON = 238900; //miles
-
-
 
 const MoonProgressCircle = () => {
   const [totalDistance, setTotalDistance] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [runData, setRunData] = useState<{ dates: string[], times: number[] }>({ dates: [], times: [] });
+  const [activityType, setActivityType] = useState<'Run' | 'Ride' | 'Swim'>('Ride');
 
   useEffect(() => {
     const fetchTotalDistance = async () => {
@@ -81,58 +74,62 @@ const MoonProgressCircle = () => {
         }
 
         const stats = await statsResponse.json();
-        const totalMiles = stats.all_ride_totals.distance * 0.000621371;  
-        /* This converts total distance in meters to miles. 
-        I was seeing about 1% discrepancy between my data on strava and display on the dashboard.
-        Would like to see this be more accurate*/
+        let totalMiles = 0;
+        if (activityType === 'Ride') {
+          totalMiles = stats.all_ride_totals.distance * 0.000621371;
+        } else if (activityType === 'Run') {
+          totalMiles = stats.all_run_totals.distance * 0.000621371;
+        } else if (activityType === 'Swim') {
+          totalMiles = stats.all_swim_totals.distance * 0.000621371;
+        }
         setTotalDistance(totalMiles);
+
         const activitiesResponse = await fetch(`https://www.strava.com/api/v3/athletes/${athleteData.id}/activities`, {
           headers: {
             'Authorization': `Bearer ${accessToken}`
           }
         });
+
         if (!activitiesResponse.ok) {
           throw new Error('Failed to fetch activities');
         }
+
         const activities = await activitiesResponse.json();
-        const recentRuns = activities.filter((activity: any) => activity.type === 'Run').slice(0, 60); // Get last 60 days of run data
-      const dates = recentRuns.map((activity: any) => new Date(activity.start_date).toLocaleDateString());
-      const times = recentRuns.map((activity: any) => activity.elapsed_time / 60); // Convert to minutes
+        const recentActivities = activities.filter((activity: any) => activity.type === activityType).slice(0, 60); // Get last 60 days of activity data
+        const dates = recentActivities.map((activity: any) => new Date(activity.start_date).toLocaleDateString());
+        const times = recentActivities.map((activity: any) => activity.elapsed_time / 60); // Convert to minutes
 
-      // Generate dates for every 10th day within the last 60 days
-      const today = new Date();
-      const generatedDates: string[] = [];  // Explicit type definition for dates
-      const generatedTimes: number[] = [];  // Explicit type definition for times
-
-      for (let i = 0; i < 60; i += 1) {
-        const date = new Date(today);
-        date.setDate(today.getDate() - i); // Get the date for every 10th day
-        generatedDates.push(date.toLocaleDateString());
-        generatedTimes.push(0); // Assume no activity for the day initially
-      }
-
-      // Ensure that we include all the generated dates, even if there's no recorded run for them
-      const finalDates: string[] = [];  // Explicit type definition for finalDates
-      const finalTimes: number[] = [];  // Explicit type definition for finalTimes
-
-      generatedDates.forEach((generatedDate, index) => {
-        const idx = dates.indexOf(generatedDate);
-        if (idx !== -1) {
-          finalDates.push(dates[idx]);
-          finalTimes.push(times[idx]);
-        } else {
-          finalDates.push(generatedDate);
-          finalTimes.push(0); // No activity for this day
+        // Generate dates for every day within the last 60 days
+        const today = new Date();
+        const generatedDates: string[] = [];
+        const generatedTimes: number[] = [];
+        for (let i = 0; i < 60; i += 1) {
+          const date = new Date(today);
+          date.setDate(today.getDate() - i);
+          generatedDates.push(date.toLocaleDateString());
+          generatedTimes.push(0);
         }
-      });
 
-      // Reverse the final arrays so that today's date is on the bottom right
-      finalDates.reverse();
-      finalTimes.reverse();
+        // Ensure that we include all the generated dates, even if there's no recorded activity for them
+        const finalDates: string[] = [];
+        const finalTimes: number[] = [];
+        generatedDates.forEach((generatedDate) => {
+          const idx = dates.indexOf(generatedDate);
+          if (idx !== -1) {
+            finalDates.push(dates[idx]);
+            finalTimes.push(times[idx]);
+          } else {
+            finalDates.push(generatedDate);
+            finalTimes.push(0);
+          }
+        });
 
-      setRunData({ dates: finalDates, times: finalTimes });
+        // Reverse the final arrays so that today's date is on the bottom right
+        finalDates.reverse();
+        finalTimes.reverse();
 
-
+        setRunData({ dates: finalDates, times: finalTimes });
+        
       } catch (error) {
         console.error('Error fetching stats:', error);
         setError(error instanceof Error ? error.message : 'Failed to fetch stats');
@@ -141,14 +138,14 @@ const MoonProgressCircle = () => {
       }
     };
     fetchTotalDistance();
-  }, []);
+  }, [activityType]);
+
 
   
-  const progress = (totalDistance / DISTANCE_TO_MOON) * 100; //your progress divided by total distance in %
-  
+  const progress = (totalDistance / DISTANCE_TO_MOON) * 100; // your progress divided by total distance in %
   
   const radius = 90;
-  const circumference = 2 * Math.PI * radius; //there's gotta be a more concise way to do this lol
+  const circumference = 2 * Math.PI * radius; // there's gotta be a more concise way to do this lol
   const progressOffset = circumference - (progress / 100) * circumference;
 
   if (loading) {
@@ -163,81 +160,114 @@ const MoonProgressCircle = () => {
     );
   }
 
+  const activityLabelMap: Record<'Run' | 'Ride' | 'Swim', string> = {
+    Run: 'Running',
+    Ride: 'Biking',
+    Swim: 'Swimming'
+  };
+
   return (
-    <div className="flex space-x-8">
-      <div className="relative w-96 h-96 flex items-center justify-center">
-        {/* Background circle */}
-        <svg className="w-full h-full transform -rotate-90">
-          <circle
-            cx="192"
-            cy="192"
-            r={radius}
-            stroke="currentColor"
-            strokeWidth="36"
-            fill="transparent"
-            className="text-orange-100"
-          />
-          {/* Progress circle */}
-          <circle
-            cx="192"
-            cy="192"
-            r={radius}
-            stroke="currentColor"
-            strokeWidth="36"
-            fill="transparent"
-            strokeDasharray={circumference}
-            strokeDashoffset={progressOffset}
-            className="text-[#FC4C02]"
-            strokeLinecap="round"
-          />
-        </svg>
-        {/* Center text */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-          <span className="text-3xl font-bold text-gray-800 mb-4">
-            {progress.toFixed(2)}%
-          </span>
-        </div>
-        {/* Bottom text */}
-        <div className="absolute bottom-4 left-0 right-0 text-center">
-          <div className="text-sm text-gray-600">
-            <div>Ride to the moon progress:</div>
-            <div>{Math.round(totalDistance).toLocaleString()}/{DISTANCE_TO_MOON.toLocaleString()} miles</div>
+    <div>
+    {/* Toggle buttons container positioned to the right and lower */}
+    <div className="r right-0 absolute top-70 flex flex-col items-right space-y-4 mr-4 mb-4">
+      <button
+        onClick={() => setActivityType('Run')}
+        className={`px-4 py-2 border rounded ${
+          activityType === 'Run' ? 'bg-[#FC4C02] text-white' : 'bg-gray-200 text-black'
+        }`}
+      >
+        Running
+      </button>
+      <button
+        onClick={() => setActivityType('Ride')}
+        className={`px-4 py-2 border rounded ${
+          activityType === 'Ride' ? 'bg-[#FC4C02] text-white' : 'bg-gray-200 text-black'
+        }`}
+      >
+        Biking
+      </button>
+      <button
+        onClick={() => setActivityType('Swim')}
+        className={`px-4 py-2 border rounded ${
+          activityType === 'Swim' ? 'bg-[#FC4C02] text-white' : 'bg-gray-200 text-black'
+        }`}
+      >
+        Swimming
+      </button>
+      </div>
+      <div className="flex space-x-8">
+        <div className="relative w-96 h-96 flex items-center justify-center">
+          {/* Background circle */}
+          <svg className="w-full h-full transform -rotate-90">
+            <circle
+              cx="192"
+              cy="192"
+              r={radius}
+              stroke="currentColor"
+              strokeWidth="36"
+              fill="transparent"
+              className="text-orange-100"
+            />
+            {/* Progress circle */}
+            <circle
+              cx="192"
+              cy="192"
+              r={radius}
+              stroke="currentColor"
+              strokeWidth="36"
+              fill="transparent"
+              strokeDasharray={circumference}
+              strokeDashoffset={progressOffset}
+              className="text-[#FC4C02]"
+              strokeLinecap="round"
+            />
+          </svg>
+          {/* Center text */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+            <span className="text-3xl font-bold text-gray-800 mb-4">
+              {progress.toFixed(2)}%
+            </span>
+          </div>
+          {/* Bottom text */}
+          <div className="absolute bottom-4 left-0 right-0 text-center">
+            <div className="text-sm text-gray-600">
+              <div>{activityLabelMap[activityType]} to the moon progress:</div>
+              <div>{Math.round(totalDistance).toLocaleString()}/{DISTANCE_TO_MOON.toLocaleString()} miles</div>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Line Chart for daily running time */}
-      <div className="w-96 h-96">
-      <ResponsiveContainer width="140%" height="70%" style={{ marginTop: '40px' }}>
-        <LineChart data={runData.dates.map((date, index) => ({ date, time: runData.times[index] }))}>
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis
-            dataKey="date"
-            interval={0}  // Ensures every date is shown, but we filter ticks below
-            ticks={runData.dates.filter((_, index) => index % 10 === 0)}  // Filter every 10th day for tick marks
-            tickFormatter={(value) => value}  // Optional: Format dates if needed
-            tick={{ fontSize: 7 }} 
-          >
-            <Label value="Date" position="bottom" offset={-5} /> {/* X-axis label */}
-          </XAxis>
-          <YAxis>
-            <Label value="Time (minutes)" angle={-90} position="left" offset={-2} /> {/* Y-axis label */}
-          </YAxis>
-          <Tooltip />
-          <Legend />
-          <Line type="monotone" dataKey="time" stroke="#FC4C02" />
-        </LineChart>
-      </ResponsiveContainer>
-        {/*Description below the chart */}
-        <div className="text-center text-sm text-gray-600 mt-4" style={{ marginLeft: '200px', marginBottom: '40px'  }}>
-          This graph shows the time you spent running each day over the past 60 days.
+        {/* Line Chart for daily activity time */}
+        <div className="w-96 h-96">
+          <ResponsiveContainer width="140%" height="70%" style={{ marginTop: '40px' }}>
+            <LineChart data={runData.dates.map((date, index) => ({ date, time: runData.times[index] }))}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis
+                dataKey="date"
+                interval={0}  // Ensures every date is shown, but we filter ticks below
+                ticks={runData.dates.filter((_, index) => index % 10 === 0)}  // Filter every 10th day for tick marks
+                tickFormatter={(value) => value}  // Optional: Format dates if needed
+                tick={{ fontSize: 7 }} 
+              >
+                <Label value="Date" position="bottom" offset={-5} /> {/* X-axis label */}
+              </XAxis>
+              <YAxis>
+                <Label value="Time (minutes)" angle={-90} position="left" offset={-2} /> {/* Y-axis label */}
+              </YAxis>
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey="time" stroke="#FC4C02" />
+            </LineChart>
+          </ResponsiveContainer>
+          {/*Description below the chart */}
+          <div className="text-center text-sm text-gray-600 mt-4" style={{ marginLeft: '200px', marginBottom: '40px'  }}>
+            This graph shows the time you spent {activityType === 'Run' ? 'running' : activityType === 'Ride' ? 'riding' : 'swimming'} each day over the past 60 days.
+          </div>
         </div>
       </div>
     </div>
   );
 };
-
-
 
 
 interface Activity {
@@ -367,9 +397,6 @@ const TopActivities = () => {
 };
 
 
-
-
-
 const MoonProgressDisplay = () => {
   return (
     <div className="bg-white rounded-lg">
@@ -378,13 +405,11 @@ const MoonProgressDisplay = () => {
   );
 };
 
->>>>>>> Stashed changes
 export default function Dashboard() {
   const [athlete, setAthlete] = useState<AthleteData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Function to extract token from URL hash
     const getTokenFromHash = () => {
       if (typeof window !== 'undefined') {
         const hash = window.location.hash;
@@ -396,22 +421,15 @@ export default function Dashboard() {
 
     const fetchAthleteData = async () => {
       try {
-        // Try to get token from URL first, then localStorage
-        let accessToken = getTokenFromHash();
+        let accessToken = getTokenFromHash(); 
         if (accessToken) {
-          // If we found token in URL, save it
           localStorage.setItem('strava_access_token', accessToken);
-          // Clean up the URL
           window.location.hash = '';
         } else {
-          // If not in URL, try localStorage
           accessToken = localStorage.getItem('strava_access_token');
         }
 
-        console.log('Access token available:', !!accessToken);
-
         if (!accessToken) {
-          console.log('No access token found, redirecting to home');
           window.location.href = '/';
           return;
         }
@@ -427,11 +445,10 @@ export default function Dashboard() {
         }
 
         const data = await response.json();
-        console.log('Athlete data received:', data);
         setAthlete(data);
       } catch (error) {
         console.error('Error fetching athlete data:', error);
-        localStorage.removeItem('strava_access_token'); // Clear invalid token
+        localStorage.removeItem('strava_access_token');
         window.location.href = '/';
       } finally {
         setLoading(false);
@@ -444,26 +461,24 @@ export default function Dashboard() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          Loading...
-        </div>
+        <div className="text-center">Loading...</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-orange-300 to-white">
       <header className="bg-white shadow">
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
             <div className="flex">
               <div className="flex-shrink-0 flex items-center">
-                <h1 className="text-xl font-bold text-indigo-600">Strava Analytics</h1>
+                <h1 className="text-xl font-bold text-[#FC4C02]">Strava Analytics</h1>
               </div>
               <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
                 <Link
                   href="/dashboard"
-                  className="border-indigo-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                  className="border-[#FC4C02] text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
                 >
                   Dashboard
                 </Link>
@@ -488,17 +503,14 @@ export default function Dashboard() {
 
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div className="px-4 py-6 sm:px-0">
-          <div className="border-4 border-dashed border-gray-200 rounded-lg p-6">
-            <h2 className="text-2xl font-semibold text-gray-900 mb-4">Your Dashboard</h2>
-            {athlete && (
-              <div className="space-y-4">
-                <p className="text-gray-600">
-                  Welcome to your personal Strava Analytics dashboard, {athlete.firstname} {athlete.lastname}!
-                </p>
-                {/* We'll add more dashboard content here later */}
-              </div>
-            )}
-          </div>
+          <h2 className="text-2xl font-semibold text-gray-900 mb-4">Your Dashboard</h2>
+          {athlete && (
+            <div className="space-y-6">
+              <p className="text-gray-600"></p>
+              <MoonProgressDisplay />
+              <TopActivities />
+            </div>
+          )}
         </div>
       </main>
     </div>
