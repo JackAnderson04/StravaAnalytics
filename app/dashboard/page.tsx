@@ -95,11 +95,11 @@ const MoonProgressCircle = () => {
         }
 
         const activities = await activitiesResponse.json();
-        const recentActivities = activities.filter((activity: any) => activity.type === activityType).slice(0, 60); // Get last 60 days of activity data
+        const recentActivities = activities.filter((activity: any) => activity.type === activityType).slice(0, 60); //Get last 60 days of activity data
         const dates = recentActivities.map((activity: any) => new Date(activity.start_date).toLocaleDateString());
         const times = recentActivities.map((activity: any) => activity.elapsed_time / 60); // Convert to minutes
 
-        // Generate dates for every day within the last 60 days
+        //get dates for every day within the last 60 days
         const today = new Date();
         const generatedDates: string[] = [];
         const generatedTimes: number[] = [];
@@ -110,7 +110,6 @@ const MoonProgressCircle = () => {
           generatedTimes.push(0);
         }
 
-        // Ensure that we include all the generated dates, even if there's no recorded activity for them
         const finalDates: string[] = [];
         const finalTimes: number[] = [];
         generatedDates.forEach((generatedDate) => {
@@ -124,7 +123,7 @@ const MoonProgressCircle = () => {
           }
         });
 
-        // Reverse the final arrays so that today's date is on the bottom right
+        //reverse dates
         finalDates.reverse();
         finalTimes.reverse();
 
@@ -168,7 +167,7 @@ const MoonProgressCircle = () => {
 
   return (
     <div>
-    {/* Toggle buttons container positioned to the right and lower */}
+    {/* Toggle buttons container positioned to the right (try to get in white box but can't figure that one out)*/}
     <div className="r right-0 absolute top-70 flex flex-col items-right space-y-4 mr-4 mb-4">
       <button
         onClick={() => setActivityType('Run')}
@@ -244,9 +243,9 @@ const MoonProgressCircle = () => {
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis
                 dataKey="date"
-                interval={0}  // Ensures every date is shown, but we filter ticks below
-                ticks={runData.dates.filter((_, index) => index % 10 === 0)}  // Filter every 10th day for tick marks
-                tickFormatter={(value) => value}  // Optional: Format dates if needed
+                interval={0}
+                ticks={runData.dates.filter((_, index) => index % 10 === 0)}  //filter every 10th day for tick marks
+                tickFormatter={(value) => value} 
                 tick={{ fontSize: 7 }} 
               >
                 <Label value="Date" position="bottom" offset={-5} /> {/* X-axis label */}
