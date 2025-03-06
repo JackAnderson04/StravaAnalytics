@@ -2,15 +2,16 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { refreshToken } from '@/utils/oauth';
 import Sidebar from '@/components/Sidebar'; // Import the Sidebar component
 
 // Define the structure of Athlete data
-interface AthleteData {
-  firstname?: string;
-  lastname?: string;
-  profile?: string;
+interface Activity {
+  id: number;
+  name: string;
+  distance: number; // distance in kilometers
+  type: string;
 }
+
 
 // Distance to the moon in miles
 const DISTANCE_TO_MOON = 238900; 
@@ -26,16 +27,16 @@ const MoonProgressCircle = () => {
   useEffect(() => {
     const fetchTotalDistance = async () => {
       try {
-        let accessToken = localStorage.getItem('strava_access_token');
+        const accessToken = localStorage.getItem('strava_access_token');
         if (!accessToken) {
           setError('No access token found');
           return;
         }
 
         // Store athlete ID/Token
-        let athleteResponse = await fetch('https://www.strava.com/api/v3/athlete', {
+        const athleteResponse = await fetch('https://www.strava.com/api/v3/athlete', {
           headers: {
-            'Authorization': `Bearer ${accessToken}`,
+            Authorization: `Bearer ${accessToken}`,
           },
         });
 
@@ -137,7 +138,7 @@ const MoonProgressDisplay = () => (
  * Component to fetch and display top activities (Rides, Runs, Swims)
  */
 const TopActivities = () => {
-  const [activities, setActivities] = useState<any[]>([]);
+  const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -172,7 +173,7 @@ const TopActivities = () => {
   if (loading) return <div>Loading top activities...</div>;
   if (error) return <div className="text-red-500">{error}</div>;
 
-  const ActivityList = ({ title, activities }: { title: string; activities: any[] }) => (
+  const ActivityList = ({ title, activities }: { title: string; activities: Activity[] }) => (
     <div className="mb-6">
       <h3 className="text-xl font-bold text-gray-800 mb-4">{title}</h3>
       <ul className="space-y-4">

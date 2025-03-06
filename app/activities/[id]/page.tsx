@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
+import Image from 'next/image';
 
 // Define the structure of an ActivityDetails object
 interface ActivityDetails {
@@ -85,13 +86,15 @@ export default function ActivityDetailsPage() {
       {photoUrl && (
         <div className="mt-6">
           {/* Use a regular <img> tag to bypass image optimization */}
-          <img
-            src={photoUrl}
-            alt={`${activity.name} photo`}
-            className="rounded-lg shadow-lg"
-            width={600}
-            height={400}
-          />
+          <Image
+    src={photoUrl}
+    alt={`${activity.name} photo`}
+    className="rounded-lg shadow-lg"
+    width={600}
+    height={400}
+    priority
+    placeholder="blur"
+/>
         </div>
       )}
     </div>

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { refreshToken } from '@/utils/oauth';
 import Sidebar from '@/components/Sidebar'; // Import the Sidebar component
 
+
 // define the structure of an activity object
 interface Activity {
   id: number;
