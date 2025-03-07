@@ -26,19 +26,6 @@ interface AthleteData {
   updated_at: string;
 }
 
-// Types can be moved to a separate types.ts file
-interface SegmentData {
-  id: number;
-  name: string;
-  distance: number;
-  average_grade: number;
-  maximum_grade: number;
-  elevation_high: number;
-  elevation_low: number;
-  total_elevation_gain: number;
-  effort_count: number;
-  activity_type: string;
-}
 
 interface SegmentEffortData {
   id: number;

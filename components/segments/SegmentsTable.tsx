@@ -16,7 +16,7 @@ interface SegmentStats {
     time: number;
     date: string;
   };
-  komTime: number | null; //ddded KOM time
+  komTime: number | null;
 }
 
 interface SegmentsTableProps {
@@ -78,7 +78,7 @@ const SegmentsTable = ({
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-indigo-600 hover:text-indigo-900 hover:underline flex items-center"
-                  onClick={(e) => e.stopPropagation()} // Prevent row click when clicking link
+                  onClick={(e) => e.stopPropagation()}
                 >
                   {segment.segmentName}
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">

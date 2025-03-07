@@ -1,7 +1,5 @@
 'use client';
 
-import { useState } from 'react';
-
 interface SegmentStats {
   segmentId: number;
   segmentName: string;
@@ -18,7 +16,7 @@ interface SegmentStats {
     time: number;
     date: string;
   };
-  komTime: number | null; // Added KOM time
+  komTime: number | null;
 }
 
 interface SegmentModalProps {
@@ -38,18 +36,13 @@ const SegmentDetailModal = ({
 }: SegmentModalProps) => {
   if (!isOpen || !segment) return null;
 
-  // Format date (YYYY-MM-DD)
   const formatDate = (dateStr: string) => {
     const date = new Date(dateStr);
     return date.toLocaleDateString();
   };
-  
-  // Sort years in descending order
   const sortedYears = Object.keys(segment.efforts).sort((a, b) => 
     parseInt(b) - parseInt(a)
   );
-
-  // Calculate gap between Personal Record and KOM
   const prToKomGap = segment.komTime && segment.allTimeBest.time
     ? segment.allTimeBest.time - segment.komTime
     : null;
