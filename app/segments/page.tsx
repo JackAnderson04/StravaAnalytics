@@ -9,7 +9,7 @@ import SegmentsTable from '../../components/segments/SegmentsTable';
 import Pagination from '../../components/common/Pagination';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import ErrorDisplay from '../../components/common/ErrorDisplay';
-
+import { formatTime, formatDistance } from '../../utils/formatters';
 interface AthleteData {
   id: number;
   firstname: string;
