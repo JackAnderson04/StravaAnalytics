@@ -10,6 +10,7 @@ import Pagination from '../../components/common/Pagination';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import ErrorDisplay from '../../components/common/ErrorDisplay';
 import { formatTime, formatDistance } from '../../utils/formatters';
+
 interface AthleteData {
   id: number;
   firstname: string;
@@ -25,7 +26,6 @@ interface AthleteData {
   created_at: string;
   updated_at: string;
 }
-
 
 interface SegmentEffortData {
   id: number;
@@ -60,9 +60,8 @@ interface SegmentStats {
     time: number;
     date: string;
   };
-  komTime: number | null; // Added KOM time
+  komTime: number | null;
 }
-
 
 export default function SegmentsPage() {
   const [athlete, setAthlete] = useState<AthleteData | null>(null);
@@ -76,7 +75,6 @@ export default function SegmentsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalSegments, setTotalSegments] = useState(0);
   const segmentsPerPage = 15;
-
 
   const toggleYear = (year: string) => {
     if (selectedYears.includes(year)) {
@@ -149,10 +147,8 @@ export default function SegmentsPage() {
       for (let i = 0; i < limitedSegmentIds.length; i += batchSize) {
         const batch = limitedSegmentIds.slice(i, i + batchSize);
         
-        //process segments one by one instead of in parallel to reduce API load
         for (const segmentId of batch) {
           try {
-
             const leaderboardResponse = await fetch(
               `https://www.strava.com/api/v3/segments/${segmentId}/leaderboard?per_page=1&page=1`,
               {
@@ -187,7 +183,6 @@ export default function SegmentsPage() {
           }
         }
         
-
         if (i + batchSize < limitedSegmentIds.length) {
           await new Promise(resolve => setTimeout(resolve, 1500));
         }
@@ -245,7 +240,7 @@ export default function SegmentsPage() {
         
         const activities = await activitiesResponse.json();
         
-        setTotalSegments(activities.length > 0 ? activities.length * 3 : 0); //Estimate total for pagination
+        setTotalSegments(activities.length > 0 ? activities.length * 3 : 0);
         
         console.log("Pagination debug:", {
           activitiesCount: activities.length,
@@ -281,7 +276,9 @@ export default function SegmentsPage() {
         
         const segmentIds = Array.from(segmentMap.keys());
         
-        await fetchKomTimes(segmentIds, accessToken, segmentMap);
+        if (accessToken) {
+          await fetchKomTimes(segmentIds, accessToken, segmentMap);
+        }
         
         setSegmentStats(Array.from(segmentMap.values()));
       } catch (error) {
@@ -337,14 +334,12 @@ export default function SegmentsPage() {
               </p>
             )}
             
-            {/* Year filter component */}
             <YearFilter 
               availableYears={availableYears}
               selectedYears={selectedYears}
               toggleYear={toggleYear}
             />
             
-            {/* Segments table component */}
             <SegmentsTable 
               segmentStats={segmentStats}
               selectedYears={selectedYears}
@@ -357,7 +352,6 @@ export default function SegmentsPage() {
               showKom={true}
             />
             
-            {/* Pagination component */}
             {totalSegments > segmentsPerPage && (
               <div className="mt-8">
                 <Pagination 
@@ -371,7 +365,6 @@ export default function SegmentsPage() {
           </div>
         </main>
 
-        {/* Segment detail modal */}
         <SegmentDetailModal 
           segment={selectedSegment}
           isOpen={isModalOpen}
