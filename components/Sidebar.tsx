@@ -7,6 +7,7 @@ const Sidebar = () => {
     { label: 'Home', icon: '🏠', href: '/dashboard' }, // home links to dashboard
     { label: 'Analytics', icon: '📊', href: '/analytics' },
     { label: 'Activities', icon: '🚴', href: '/activities' },
+    { label: 'Segments', icon: '🚀', href: '/segments' },
     { label: 'Settings', icon: '⚙️', href: '/settings' },
     { label: 'Profile', icon: '👤', href: '/profile' },
     { label: 'Help', icon: '❓', href: '/help' },
