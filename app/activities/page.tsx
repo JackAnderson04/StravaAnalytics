@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { refreshToken } from '@/utils/oauth';
+import Sidebar from '@/components/Sidebar'; // Import the Sidebar component
+
 
 // define the structure of an activity object
 interface Activity {
@@ -90,56 +92,35 @@ export default function Activities() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-orange-300 to-white">
-      {/* Navigation Header */}
-      <header className="bg-white shadow">
-        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16">
-            <div className="flex">
-              <div className="flex-shrink-0 flex items-center">
-                <h1 className="text-xl font-bold text-[#FC4C02]">Strava Activities</h1>
-              </div>
-              <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-                <Link href="/dashboard" className="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
-                  Dashboard
-                </Link>
-                <Link href="/activities" className="border-[#FC4C02] text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
-                  Activities
-                </Link>
-              </div>
-            </div>
-          </div>
-        </nav>
-      </header>
+    <div className="flex min-h-screen bg-gray-100">
+      {/* Render Sidebar */}
+      <Sidebar />
 
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
-          <h2 className="text-2xl font-semibold text-gray-900 mb-4">Your Activities</h2>
+      <main className="flex-1 p-6 ml-20">
+        <h2 className="text-2xl font-semibold text-gray-900 mb-4">Your Activities</h2>
 
-          {/* Display error message if any */}
-          {error ? (
-            <div className="text-red-600">{error}</div>
-          ) : (
-            <ul className="space-y-4">
-              {activities.length > 0 ? (
-                activities.map((activity) => (
-                  <li key={activity.id} className="bg-white p-4 shadow rounded-md">
-                    {/* Make each activity clickable */}
-                    <Link href={`/activities/${activity.id}`} className="block hover:bg-gray-100 p-4 rounded-lg transition">
-                      <h3 className="text-lg font-semibold text-indigo-700">{activity.name}</h3>
-                      <p className="text-gray-600">
-                        {activity.type} | {Math.round(activity.distance / 1000)} km | {new Date(activity.start_date_local).toLocaleDateString()}
-                      </p>
-                    </Link>
-                  </li>
-                ))
-              ) : (
-                <p className="text-gray-600">No activities found.</p>
-              )}
-            </ul>
-          )}
-        </div>
+        {error ? (
+          <div className="text-red-600">{error}</div>
+        ) : (
+          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {activities.length > 0 ? (
+              activities.map((activity) => (
+                <li key={activity.id} className="bg-white p-4 shadow-md rounded-lg hover:shadow-lg transition">
+                  <Link href={`/activities/${activity.id}`} className="block p-4 rounded-lg">
+                    <h3 className="text-lg font-semibold text-[#FC4C02]">{activity.name}</h3>
+                    <p className="text-gray-600 mt-2">
+                      <span className="font-bold">{activity.type}</span> |{' '}
+                      <span>{Math.round(activity.distance / 1000)} km</span> |{' '}
+                      <span>{new Date(activity.start_date_local).toLocaleDateString()}</span>
+                    </p>
+                  </Link>
+                </li>
+              ))
+            ) : (
+              <p className="text-gray-600">No activities found.</p>
+            )}
+          </ul>
+        )}
       </main>
     </div>
   );
