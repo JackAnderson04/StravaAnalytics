@@ -93,7 +93,6 @@ export default function ActivityDetailsPage() {
     width={600}
     height={400}
     priority
-    placeholder="blur"
 />
         </div>
       )}
