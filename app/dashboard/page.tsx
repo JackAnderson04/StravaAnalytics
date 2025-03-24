@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Label } from 'recharts'; 
 import Sidebar from '@/components/Sidebar';
 import ProgressBottomBar from '@/components/ProgressBottomBar';
 import MoonProgressCircle from '@/components/MoonProgressCircle';
@@ -22,7 +21,7 @@ export default function Dashboard() {
 
     const fetchAthleteData = async () => {
       try {
-        let accessToken = getTokenFromHash(); 
+        let accessToken = getTokenFromHash();
         if (accessToken) {
           localStorage.setItem('strava_access_token', accessToken);
           window.location.hash = '';
