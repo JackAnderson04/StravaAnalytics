@@ -79,7 +79,7 @@ export default function Activities() {
 
   // Function to fetch activity stream data (including velocity_smooth)
   const fetchStreamData = async (activityId: string) => {
-    let accessToken = localStorage.getItem('strava_access_token');
+    const accessToken = localStorage.getItem('strava_access_token');
     const response = await fetch(
       `https://www.strava.com/api/v3/activities/${activityId}/streams?keys=time,velocity_smooth&key_by_type=true`,
       {

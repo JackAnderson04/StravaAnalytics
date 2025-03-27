@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { refreshToken } from '@/utils/oauth';
 import Sidebar from '@/components/Sidebar';
 
 export default function SettingsPage() {

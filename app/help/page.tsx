@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import { refreshToken } from '@/utils/oauth';
 import Sidebar from '@/components/Sidebar';
 
 export default function HelpPage() {
@@ -20,7 +19,7 @@ export default function HelpPage() {
         <ul className="list-disc list-inside text-gray-700 space-y-2">
           <li><strong>What is Strava Analytics?</strong> - An add-on for Strava to give more data analytics for athletes</li>
           <li><strong>Should I be worried about my data?</strong> - We do not store any of the data from Strava</li>
-          <li><strong>Something isn't working, what do I do?</strong> - We are sorry that something isn't working, if you want it fixed please email rosemary.shelton@marquette.edu</li>
+          <li><strong>Something is not working, what do I do?</strong> - We are sorry that something is not working, if you want it fixed please email rosemary.shelton@marquette.edu</li>
           <li><strong>Can I delete my account with Strava Analytics</strong> - You are logged in through Strava, we do not have hold any account information</li>
         </ul>
       </div>

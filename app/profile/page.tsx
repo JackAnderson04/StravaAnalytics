@@ -19,7 +19,7 @@ export default function ProfilePage() {
           />
           <div>
             <h3 className="text-xl font-bold text-gray-800">Hector Reyes</h3>
-            <p className="text-gray-500">"Training for the moon 🚀"</p>
+            <p className="text-gray-500">Training for the moon 🚀</p>
           </div>
         </div>
 
@@ -45,7 +45,7 @@ export default function ProfilePage() {
           <ul className="space-y-3">
             <li className="text-gray-700">🚴‍♂️ Lakefront Trail - 40km Ride</li>
             <li className="text-gray-700">🏃‍♂️ 5K Sprint Challenge</li>
-            <li className="text-gray-700">🏊‍♂️ Open Water Swim - Summer '24</li>
+            <li className="text-gray-700">🏊‍♂️ Open Water Swim - Summer 2024</li>
           </ul>
         </div>
 

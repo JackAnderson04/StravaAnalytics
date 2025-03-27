@@ -2,7 +2,6 @@
 
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import { refreshToken } from '@/utils/oauth';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Label } from 'recharts'; 
 
@@ -96,9 +95,7 @@ const MoonProgressCircle = () => {
         }
 
         const activities = await activitiesResponse.json();
-        //const recentActivities = activities.filter((activity: any) => activity.type === activityType).slice(0, 60); //Get last 60 days of activity data
-        //const dates = recentActivities.map((activity: any) => new Date(activity.start_date).toLocaleDateString());
-        //const times = recentActivities.map((activity: any) => activity.elapsed_time / 60); // Convert to minutes
+
         const recentActivities = activities.filter((activity: { type: string }) => activity.type === activityType).slice(0, 60); //
         const dates = recentActivities.map((activity: { start_date: string }) =>new Date(activity.start_date).toLocaleDateString());
         const times = recentActivities.map((activity: { elapsed_time: number }) =>activity.elapsed_time / 60);
