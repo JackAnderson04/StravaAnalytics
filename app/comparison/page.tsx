@@ -23,7 +23,7 @@ export default function Activities() {
   const [selectedActivity2, setSelectedActivity2] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [graphData, setGraphData] = useState<any[]>([]);
+  const [graphData, setGraphData] = useState<Array<Record<string, number | null>>>([]);
   const [showGraph, setShowGraph] = useState(false);
 
   // Fetch activities when the component mounts
