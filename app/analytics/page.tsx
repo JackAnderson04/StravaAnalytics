@@ -49,7 +49,7 @@ export default function AnalyticsPage() {
   useEffect(() => {
     const fetchActivities = async () => {
       try {
-        let accessToken = localStorage.getItem('strava_access_token');
+        const accessToken = localStorage.getItem('strava_access_token');
         if (!accessToken) {
           setError('No access token found');
           return;
