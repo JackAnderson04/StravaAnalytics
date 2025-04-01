@@ -58,7 +58,7 @@ export default function TerritoryPage() {
             </p>
 
             <MapControls
-              isAnalysisStarted={isAnalysisStarted}
+              //isAnalysisStarted={isAnalysisStarted}
               onStartAnalysis={handleStartAnalysis}
               maxActivities={maxActivities}
               onMaxActivitiesChange={handleMaxActivitiesChange}
