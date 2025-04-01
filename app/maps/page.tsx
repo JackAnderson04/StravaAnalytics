@@ -54,7 +54,7 @@ export default function TerritoryPage() {
           <div className="mb-6">
             <h2 className="text-2xl font-semibold text-gray-900 mb-2">Map Analysis</h2>
             <p className="text-gray-600 mb-6">
-              Select a point on the map, set a radius, and analyze what percentage of that area you've covered in your Strava activities.
+              Select a point on the map, set a radius, and analyze what percentage of that area you&apos;ve covered in your Strava activities.
             </p>
 
             <MapControls
