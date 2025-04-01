@@ -10,7 +10,6 @@ import ErrorDisplay from '../../components/common/ErrorDisplay';
 export default function TerritoryPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [isAnalysisStarted, setIsAnalysisStarted] = useState(false);
   const [maxActivities, setMaxActivities] = useState(100);
   const [radius, setRadius] = useState(5); //default 5 miles
   const [coverage, setCoverage] = useState<number | null>(null);
@@ -24,8 +23,7 @@ export default function TerritoryPage() {
 
     setLoading(true);
     setError(null);
-    setIsAnalysisStarted(true);
-
+    
     //Next steps, this is where we're gonna call the backend
     setTimeout(() => {
       const mockCoverage = Math.floor(Math.random() * 60) + 20;
@@ -58,7 +56,6 @@ export default function TerritoryPage() {
             </p>
 
             <MapControls
-              //isAnalysisStarted={isAnalysisStarted}
               onStartAnalysis={handleStartAnalysis}
               maxActivities={maxActivities}
               onMaxActivitiesChange={handleMaxActivitiesChange}
