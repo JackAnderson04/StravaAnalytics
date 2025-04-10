@@ -1,7 +1,7 @@
 'use client';
 
 interface MapControlsProps {
-  isAnalysisStarted: boolean;
+  //isAnalysisStarted: boolean;
   onStartAnalysis: () => void;
   maxActivities: number;
   onMaxActivitiesChange: (value: number) => void;
@@ -11,7 +11,7 @@ interface MapControlsProps {
 }
 
 const MapControls = ({
-  isAnalysisStarted,
+  //isAnalysisStarted,
   onStartAnalysis,
   maxActivities,
   onMaxActivitiesChange,
