@@ -294,10 +294,36 @@ export default function Activities() {
             </ul>
           </div>
         )}
+        
       
-        {/* Render Graph */}
+        {/*Render Graph */}
         {showGraph && (
           <div className="mt-8 bg-white p-6 rounded shadow">
+            
+            {/*Info on Activities */}
+            <div className="mb-6 bg-white p-4 rounded shadow-md">
+              <h4 className="text-lg font-semibold mb-2 text-gray-800">Comparison Summary</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
+                {[selectedActivity1, selectedActivity2].map((id, i) => {
+                  const activity = activities.find(a => a.id === parseInt(id));
+                  if (!activity) return null;
+
+                  return (
+                    <div key={id} className="border p-4 rounded bg-[#fafafa] shadow-sm">
+                      <h5 className="text-md font-semibold text-[#FC4C02] mb-1">
+                        {i === 0 ? 'Activity 1' : 'Activity 2'}: {activity.name}
+                      </h5>
+                      <p><strong>Type:</strong> {activity.type}</p>
+                      <p><strong>Distance:</strong> {(activity.distance / 1000).toFixed(2)} km</p>
+                      <p><strong>Duration:</strong> {(activity.moving_time / 60).toFixed(1)} min</p>
+                      <p><strong>Date:</strong> {new Date(activity.start_date_local).toLocaleDateString()}</p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/*Graph*/}
             <h3 className="text-xl font-semibold text-gray-900 mb-4">Velocity Over Time</h3>
             <ResponsiveContainer width="100%" height={400}>
               <LineChart data={graphData}>
@@ -323,6 +349,7 @@ export default function Activities() {
             </ResponsiveContainer>
           </div>
         )}
+
       </main>
     </div>
   );
