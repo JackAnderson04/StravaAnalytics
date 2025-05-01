@@ -10,7 +10,6 @@ const Sidebar = () => {
     { label: 'Comparison', icon: '🏃🏻‍♂️🏃🏻', href: '/comparison' },
     { label: 'Segments', icon: '🚀', href: '/segments' },
     { label: 'Mapping', icon: '🗺️', href: '/maps' },
-    { label: 'Settings', icon: '⚙️', href: '/settings' },
     { label: 'Profile', icon: '👤', href: '/profile' },
     { label: 'Help', icon: '❓', href: '/help' },
   ];

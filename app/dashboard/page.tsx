@@ -73,17 +73,7 @@ export default function Dashboard() {
       <Sidebar />
       
       <main className="flex-1 p-6 ml-20">
-        <div className="flex items-center justify-between mb-6">
-          <div className="relative w-full max-w-md">
-            <input
-              type="text"
-              placeholder="Search activities..."
-              className="w-full p-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:border-orange-400
-                         text-orange-500 placeholder:text-orange-300 bg-white"
-            />
-            <span className="absolute left-3 top-2 text-orange-400">🔍</span>
-          </div>
-        </div>
+       
 
         <h2 className="text-2xl font-semibold text-gray-900 mb-4">Your Dashboard</h2>
         
